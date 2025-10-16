@@ -10,6 +10,7 @@ _MealSummary _$MealSummaryFromJson(Map<String, dynamic> json) => _MealSummary(
       idMeal: json['idMeal'] as String,
       strMeal: json['strMeal'] as String,
       strMealThumb: json['strMealThumb'] as String?,
+      strCategory: json['strCategory'] as String?,
     );
 
 Map<String, dynamic> _$MealSummaryToJson(_MealSummary instance) =>
@@ -17,4 +18,5 @@ Map<String, dynamic> _$MealSummaryToJson(_MealSummary instance) =>
       'idMeal': instance.idMeal,
       'strMeal': instance.strMeal,
       'strMealThumb': instance.strMealThumb,
+      'strCategory': instance.strCategory,
     };

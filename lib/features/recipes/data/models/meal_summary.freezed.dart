@@ -18,6 +18,7 @@ mixin _$MealSummary {
   String get idMeal;
   String get strMeal;
   String? get strMealThumb;
+  String? get strCategory;
 
   /// Create a copy of MealSummary
   /// with the given fields replaced by the non-null parameter values.
@@ -37,16 +38,19 @@ mixin _$MealSummary {
             (identical(other.idMeal, idMeal) || other.idMeal == idMeal) &&
             (identical(other.strMeal, strMeal) || other.strMeal == strMeal) &&
             (identical(other.strMealThumb, strMealThumb) ||
-                other.strMealThumb == strMealThumb));
+                other.strMealThumb == strMealThumb) &&
+            (identical(other.strCategory, strCategory) ||
+                other.strCategory == strCategory));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, idMeal, strMeal, strMealThumb);
+  int get hashCode =>
+      Object.hash(runtimeType, idMeal, strMeal, strMealThumb, strCategory);
 
   @override
   String toString() {
-    return 'MealSummary(idMeal: $idMeal, strMeal: $strMeal, strMealThumb: $strMealThumb)';
+    return 'MealSummary(idMeal: $idMeal, strMeal: $strMeal, strMealThumb: $strMealThumb, strCategory: $strCategory)';
   }
 }
 
@@ -56,7 +60,11 @@ abstract mixin class $MealSummaryCopyWith<$Res> {
           MealSummary value, $Res Function(MealSummary) _then) =
       _$MealSummaryCopyWithImpl;
   @useResult
-  $Res call({String idMeal, String strMeal, String? strMealThumb});
+  $Res call(
+      {String idMeal,
+      String strMeal,
+      String? strMealThumb,
+      String? strCategory});
 }
 
 /// @nodoc
@@ -74,6 +82,7 @@ class _$MealSummaryCopyWithImpl<$Res> implements $MealSummaryCopyWith<$Res> {
     Object? idMeal = null,
     Object? strMeal = null,
     Object? strMealThumb = freezed,
+    Object? strCategory = freezed,
   }) {
     return _then(_self.copyWith(
       idMeal: null == idMeal
@@ -88,6 +97,10 @@ class _$MealSummaryCopyWithImpl<$Res> implements $MealSummaryCopyWith<$Res> {
           ? _self.strMealThumb
           : strMealThumb // ignore: cast_nullable_to_non_nullable
               as String?,
+      strCategory: freezed == strCategory
+          ? _self.strCategory
+          : strCategory // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -96,7 +109,10 @@ class _$MealSummaryCopyWithImpl<$Res> implements $MealSummaryCopyWith<$Res> {
 @JsonSerializable()
 class _MealSummary implements MealSummary {
   const _MealSummary(
-      {required this.idMeal, required this.strMeal, this.strMealThumb});
+      {required this.idMeal,
+      required this.strMeal,
+      this.strMealThumb,
+      this.strCategory});
   factory _MealSummary.fromJson(Map<String, dynamic> json) =>
       _$MealSummaryFromJson(json);
 
@@ -106,6 +122,8 @@ class _MealSummary implements MealSummary {
   final String strMeal;
   @override
   final String? strMealThumb;
+  @override
+  final String? strCategory;
 
   /// Create a copy of MealSummary
   /// with the given fields replaced by the non-null parameter values.
@@ -130,16 +148,19 @@ class _MealSummary implements MealSummary {
             (identical(other.idMeal, idMeal) || other.idMeal == idMeal) &&
             (identical(other.strMeal, strMeal) || other.strMeal == strMeal) &&
             (identical(other.strMealThumb, strMealThumb) ||
-                other.strMealThumb == strMealThumb));
+                other.strMealThumb == strMealThumb) &&
+            (identical(other.strCategory, strCategory) ||
+                other.strCategory == strCategory));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, idMeal, strMeal, strMealThumb);
+  int get hashCode =>
+      Object.hash(runtimeType, idMeal, strMeal, strMealThumb, strCategory);
 
   @override
   String toString() {
-    return 'MealSummary(idMeal: $idMeal, strMeal: $strMeal, strMealThumb: $strMealThumb)';
+    return 'MealSummary(idMeal: $idMeal, strMeal: $strMeal, strMealThumb: $strMealThumb, strCategory: $strCategory)';
   }
 }
 
@@ -151,7 +172,11 @@ abstract mixin class _$MealSummaryCopyWith<$Res>
       __$MealSummaryCopyWithImpl;
   @override
   @useResult
-  $Res call({String idMeal, String strMeal, String? strMealThumb});
+  $Res call(
+      {String idMeal,
+      String strMeal,
+      String? strMealThumb,
+      String? strCategory});
 }
 
 /// @nodoc
@@ -169,6 +194,7 @@ class __$MealSummaryCopyWithImpl<$Res> implements _$MealSummaryCopyWith<$Res> {
     Object? idMeal = null,
     Object? strMeal = null,
     Object? strMealThumb = freezed,
+    Object? strCategory = freezed,
   }) {
     return _then(_MealSummary(
       idMeal: null == idMeal
@@ -182,6 +208,10 @@ class __$MealSummaryCopyWithImpl<$Res> implements _$MealSummaryCopyWith<$Res> {
       strMealThumb: freezed == strMealThumb
           ? _self.strMealThumb
           : strMealThumb // ignore: cast_nullable_to_non_nullable
+              as String?,
+      strCategory: freezed == strCategory
+          ? _self.strCategory
+          : strCategory // ignore: cast_nullable_to_non_nullable
               as String?,
     ));
   }

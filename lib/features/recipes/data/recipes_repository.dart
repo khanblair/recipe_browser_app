@@ -37,7 +37,8 @@ class RecipesRepositoryImpl implements RecipesRepository {
     try {
       final res = await _client.dio.get(ApiPaths.filter, queryParameters: {'c': category});
       final list = (res.data['meals'] as List?)?.cast<Map<String, dynamic>>() ?? [];
-      return list.map(MealSummary.fromJson).toList();
+      // Filter endpoint doesn't return category, so we add it manually
+      return list.map((e) => MealSummary.fromJson(e).copyWith(strCategory: category)).toList();
     } on DioException catch (e) {
       throw NetworkException(e.message ?? 'Network error');
     } catch (e) {

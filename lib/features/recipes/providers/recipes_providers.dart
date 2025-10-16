@@ -11,13 +11,16 @@ final categoriesProvider = FutureProvider<List<Category>>((ref) async {
   return ref.read(recipesRepositoryProvider).getCategories();
 });
 
-// Selected category state
-final selectedCategoryProvider = StateProvider<String?>((ref) => null);
+// Selected category state (null means 'All' - show from Beef category by default)
+final selectedCategoryProvider = StateProvider<String?>((ref) => 'Beef');
 
 // Meals by category
 final mealsByCategoryProvider = FutureProvider.autoDispose<List<MealSummary>>((ref) async {
   final category = ref.watch(selectedCategoryProvider);
-  if (category == null || category.isEmpty) return [];
+  if (category == null || category.isEmpty) {
+    // When 'All' is selected, fetch from a default category (Beef)
+    return ref.read(recipesRepositoryProvider).getByCategory('Beef');
+  }
   return ref.read(recipesRepositoryProvider).getByCategory(category);
 });
 

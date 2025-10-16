@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'core/theme/app_theme.dart';
+import 'core/providers/theme_provider.dart';
 import 'features/recipes/presentation/list_screen.dart';
 import 'features/recipes/presentation/detail_screen.dart';
 import 'features/favorites/favorites_service.dart';
@@ -42,11 +43,13 @@ class RecipeBrowserApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(hiveInitProvider);
     final router = ref.watch(_routerProvider);
+    final themeMode = ref.watch(themeModeProvider);
     return MaterialApp.router(
       title: 'Recipe Browser',
+      debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
-      themeMode: ThemeMode.system,
+      themeMode: themeMode,
       routerConfig: router,
     );
   }

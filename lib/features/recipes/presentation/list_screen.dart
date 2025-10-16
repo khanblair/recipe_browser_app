@@ -7,6 +7,7 @@ import '../../../core/widgets/app_skeleton.dart';
 import '../../../core/widgets/empty_state.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/utils/debounce.dart';
+import '../../../core/providers/theme_provider.dart';
 import '../../favorites/favorites_service.dart';
 import '../providers/recipes_providers.dart';
 
@@ -39,7 +40,16 @@ class _RecipeListScreenState extends ConsumerState<RecipeListScreen> {
     final meals = isSearching ? ref.watch(searchResultsProvider) : ref.watch(mealsByCategoryProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Recipes')),
+      appBar: AppBar(
+        title: const Text('Recipes'),
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: const Icon(Icons.menu),
+            onPressed: () => Scaffold.of(context).openDrawer(),
+          ),
+        ),
+      ),
+      drawer: _AppDrawer(),
       body: Column(
         children: [
           Padding(
@@ -73,17 +83,7 @@ class _RecipeListScreenState extends ConsumerState<RecipeListScreen> {
           ),
           categories.when(
             data: (data) {
-              final chips = <Widget>[
-                ChoiceChip(
-                  label: const Text('All'),
-                  selected: selectedCategory == null,
-                  onSelected: (_) {
-                    ref.read(searchQueryProvider.notifier).state = '';
-                    ref.read(selectedCategoryProvider.notifier).state = null;
-                    setState(() => _page = 1);
-                  },
-                ),
-              ];
+              final chips = <Widget>[];
               chips.addAll(data.map((c) => Padding(
                     padding: const EdgeInsets.only(left: 8.0),
                     child: ChoiceChip(
@@ -139,12 +139,17 @@ class _RecipeListScreenState extends ConsumerState<RecipeListScreen> {
                   },
                   child: ListView.separated(
                     controller: _controller,
-                    padding: const EdgeInsets.all(12),
+                    padding: const EdgeInsets.symmetric(vertical: 8),
                     itemBuilder: (context, index) {
                       final meal = pageItems[index];
-                      return _RecipeTile(mealId: meal.idMeal, title: meal.strMeal, thumb: meal.strMealThumb);
+                      return _RecipeTile(
+                        mealId: meal.idMeal,
+                        title: meal.strMeal,
+                        thumb: meal.strMealThumb,
+                        category: meal.strCategory,
+                      );
                     },
-                    separatorBuilder: (_, __) => const Divider(height: 1),
+                    separatorBuilder: (_, __) => const SizedBox(height: 4),
                     itemCount: pageItems.length,
                   ),
                 );
@@ -174,36 +179,186 @@ class _RecipeListScreenState extends ConsumerState<RecipeListScreen> {
 }
 
 class _RecipeTile extends ConsumerWidget {
-  const _RecipeTile({required this.mealId, required this.title, required this.thumb});
+  const _RecipeTile({
+    required this.mealId,
+    required this.title,
+    required this.thumb,
+    this.category,
+  });
   final String mealId;
   final String title;
   final String? thumb;
+  final String? category;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final favSvc = ref.watch(favoritesServiceProvider);
     final isFav = favSvc.isFav(mealId);
-    return ListTile(
-      leading: ClipRRect(
-        borderRadius: BorderRadius.circular(6),
-        child: SizedBox(
-          width: 56,
-          height: 56,
-          child: thumb == null
-              ? const ColoredBox(color: Colors.black12)
-              : CachedNetworkImage(imageUrl: thumb!, fit: BoxFit.cover),
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: () => context.go('/detail/$mealId'),
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Row(
+            children: [
+              Hero(
+                tag: 'meal-$mealId',
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: SizedBox(
+                    width: 72,
+                    height: 72,
+                    child: thumb == null
+                        ? Container(
+                            color: Theme.of(context).colorScheme.surfaceVariant,
+                            child: const Icon(Icons.restaurant_menu, size: 32),
+                          )
+                        : CachedNetworkImage(
+                            imageUrl: thumb!,
+                            fit: BoxFit.cover,
+                            placeholder: (_, __) => Container(
+                              color: Theme.of(context).colorScheme.surfaceVariant,
+                            ),
+                          ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                    ),
+                    if (category != null) ...[
+                      const SizedBox(height: 4),
+                      Text(
+                        category!,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: Theme.of(context).colorScheme.secondary,
+                            ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              IconButton(
+                icon: Icon(
+                  isFav ? Icons.favorite : Icons.favorite_border,
+                  color: isFav ? Colors.red : null,
+                ),
+                onPressed: () async {
+                  await favSvc.toggle(mealId);
+                  ref.invalidate(favoritesListProvider);
+                },
+              ),
+            ],
+          ),
         ),
       ),
-      title: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis),
-      subtitle: const Text(''),
-      trailing: IconButton(
-        icon: Icon(isFav ? Icons.favorite : Icons.favorite_border, color: isFav ? Colors.red : null),
-        onPressed: () async {
-          await favSvc.toggle(mealId);
-          ref.invalidate(favoritesListProvider);
-        },
+    );
+  }
+}
+
+class _AppDrawer extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeMode = ref.watch(themeModeProvider);
+    final isDark = themeMode == ThemeMode.dark || 
+                   (themeMode == ThemeMode.system && MediaQuery.of(context).platformBrightness == Brightness.dark);
+    
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          DrawerHeader(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.primaryContainer,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Icon(
+                  Icons.restaurant_menu,
+                  size: 48,
+                  color: Theme.of(context).colorScheme.onPrimaryContainer,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Recipe Browser',
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                        color: Theme.of(context).colorScheme.onPrimaryContainer,
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+              ],
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.home),
+            title: const Text('Home'),
+            onTap: () {
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.favorite),
+            title: const Text('Favorites'),
+            onTap: () {
+              Navigator.pop(context);
+              context.go('/favorites');
+            },
+          ),
+          const Divider(),
+          SwitchListTile(
+            secondary: Icon(isDark ? Icons.dark_mode : Icons.light_mode),
+            title: const Text('Dark Mode'),
+            subtitle: Text(themeMode == ThemeMode.system ? 'System default' : (isDark ? 'On' : 'Off')),
+            value: isDark,
+            onChanged: (value) {
+              ref.read(themeModeProvider.notifier).state = 
+                  value ? ThemeMode.dark : ThemeMode.light;
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.settings_brightness),
+            title: const Text('Use System Theme'),
+            trailing: themeMode == ThemeMode.system 
+                ? const Icon(Icons.check, color: Colors.green)
+                : null,
+            onTap: () {
+              ref.read(themeModeProvider.notifier).state = ThemeMode.system;
+            },
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.info_outline),
+            title: const Text('About'),
+            onTap: () {
+              showAboutDialog(
+                context: context,
+                applicationName: 'Recipe Browser',
+                applicationVersion: '1.0.0',
+                applicationIcon: const Icon(Icons.restaurant_menu, size: 48),
+                children: [
+                  const Text('Browse recipes from TheMealDB API'),
+                  const SizedBox(height: 8),
+                  const Text('Built with Flutter & Riverpod'),
+                ],
+              );
+            },
+          ),
+        ],
       ),
-      onTap: () => context.go('/detail/$mealId'),
     );
   }
 }
