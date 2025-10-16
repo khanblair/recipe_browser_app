@@ -1,4 +1,30 @@
-# recipe_browser_app
+A concise Flutter app that browses recipes from TheMealDB with search, filter, details, and favorites.
+
+## Setup
+
+1) Flutter 3.27.x and Dart 3.6+ installed.
+2) Get packages and run:
+
+```powershell
+flutter pub get
+flutter run --dart-define=GEMINI_API_KEY=YOUR_KEY
+```
+
+> GEMINI_API_KEY is optional; if omitted, AI suggestions are disabled.
+
+## Architecture
+
+- State: Riverpod
+- Networking: Dio
+- Routing: go_router
+- Models: Freezed + json_serializable
+- Cache: Hive (favorites, small local cache)
+
+## Notes
+
+- TheMealDB lacks server pagination; the app uses client-side chunking.
+- Offline shows cached categories and last successful list when available.
+
 
 A new Flutter project.
 
