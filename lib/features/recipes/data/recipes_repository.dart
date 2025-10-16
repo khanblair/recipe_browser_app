@@ -13,6 +13,7 @@ abstract class RecipesRepository {
   Future<List<MealSummary>> getByCategory(String category);
   Future<List<MealSummary>> searchByName(String query);
   Future<MealDetail> getDetail(String id);
+  Future<List<MealSummary>> getAllMeals();
 }
 
 class RecipesRepositoryImpl implements RecipesRepository {
@@ -76,6 +77,34 @@ class RecipesRepositoryImpl implements RecipesRepository {
       throw NetworkException(e.message ?? 'Network error');
     } catch (e) {
       throw ParsingException('Failed to parse meal detail');
+    }
+  }
+
+  @override
+  Future<List<MealSummary>> getAllMeals() async {
+    try {
+      // Fetch meals from multiple categories and mix them
+      final categories = ['Beef', 'Chicken', 'Dessert', 'Seafood', 'Vegetarian', 'Pasta'];
+      final List<MealSummary> allMeals = [];
+      
+      for (final cat in categories) {
+        try {
+          final res = await _client.dio.get(ApiPaths.filter, queryParameters: {'c': cat});
+          final list = (res.data['meals'] as List?)?.cast<Map<String, dynamic>>() ?? [];
+          final meals = list.take(5).map((e) => MealSummary.fromJson(e).copyWith(strCategory: cat)).toList();
+          allMeals.addAll(meals);
+        } catch (e) {
+          // Skip if category fails
+        }
+      }
+      
+      // Shuffle to mix categories
+      allMeals.shuffle();
+      return allMeals;
+    } on DioException catch (e) {
+      throw NetworkException(e.message ?? 'Network error');
+    } catch (e) {
+      throw ParsingException('Failed to fetch all meals');
     }
   }
 }

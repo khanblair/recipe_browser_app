@@ -39,6 +39,7 @@ class RecipeDetailScreen extends ConsumerWidget {
               SliverAppBar(
                 expandedHeight: 250,
                 pinned: true,
+                automaticallyImplyLeading: false,
                 flexibleSpace: FlexibleSpaceBar(
                   background: m.strMealThumb != null
                       ? Hero(

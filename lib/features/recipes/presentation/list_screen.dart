@@ -83,7 +83,17 @@ class _RecipeListScreenState extends ConsumerState<RecipeListScreen> {
           ),
           categories.when(
             data: (data) {
-              final chips = <Widget>[];
+              final chips = <Widget>[
+                ChoiceChip(
+                  label: const Text('All'),
+                  selected: selectedCategory == null,
+                  onSelected: (_) {
+                    ref.read(searchQueryProvider.notifier).state = '';
+                    ref.read(selectedCategoryProvider.notifier).state = null;
+                    setState(() => _page = 1);
+                  },
+                ),
+              ];
               chips.addAll(data.map((c) => Padding(
                     padding: const EdgeInsets.only(left: 8.0),
                     child: ChoiceChip(
@@ -256,8 +266,7 @@ class _RecipeTile extends ConsumerWidget {
                   color: isFav ? Colors.red : null,
                 ),
                 onPressed: () async {
-                  await favSvc.toggle(mealId);
-                  ref.invalidate(favoritesListProvider);
+                  await ref.read(favoritesListProvider.notifier).toggle(mealId);
                 },
               ),
             ],

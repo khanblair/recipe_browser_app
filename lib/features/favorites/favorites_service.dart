@@ -29,7 +29,21 @@ final favoritesServiceProvider = Provider<FavoritesService>((ref) {
   return FavoritesService(box);
 });
 
-final favoritesListProvider = StateProvider<List<String>>((ref) {
-  final svc = ref.read(favoritesServiceProvider);
-  return svc.all();
+final favoritesListProvider = StateNotifierProvider<FavoritesNotifier, List<String>>((ref) {
+  final svc = ref.watch(favoritesServiceProvider);
+  return FavoritesNotifier(svc);
 });
+
+class FavoritesNotifier extends StateNotifier<List<String>> {
+  FavoritesNotifier(this._service) : super(_service.all());
+  final FavoritesService _service;
+
+  Future<void> toggle(String id) async {
+    await _service.toggle(id);
+    state = _service.all();
+  }
+
+  void refresh() {
+    state = _service.all();
+  }
+}
