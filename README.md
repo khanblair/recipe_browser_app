@@ -25,6 +25,36 @@ flutter run --dart-define=GEMINI_API_KEY=YOUR_KEY
 - TheMealDB lacks server pagination; the app uses client-side chunking.
 - Offline shows cached categories and last successful list when available.
 
+## Development
+
+Run codegen when changing models:
+
+```powershell
+dart run build_runner build -d
+```
+
+Analyze and test:
+
+```powershell
+flutter analyze
+flutter test
+```
+
+## Routes
+
+- / — Recipe list (search + filter + pagination)
+- /detail/:id — Recipe detail
+- /favorites — Favorites list
+
+## Time log (fill on completion)
+
+- Planning & setup: ~
+- Data layer & models: ~
+- List/search/filter: ~
+- Details & polish: ~
+- Favorites & offline: ~
+- README & tests: ~
+
 
 A new Flutter project.
 

@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'core/theme/app_theme.dart';
 import 'features/recipes/presentation/list_screen.dart';
 import 'features/recipes/presentation/detail_screen.dart';
+import 'features/favorites/favorites_service.dart';
+import 'features/favorites/favorites_screen.dart';
 
 final _routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
@@ -22,6 +24,11 @@ final _routerProvider = Provider<GoRouter>((ref) {
               return RecipeDetailScreen(mealId: id);
             },
           ),
+          GoRoute(
+            path: 'favorites',
+            name: 'favorites',
+            builder: (context, state) => const FavoritesScreen(),
+          ),
         ],
       ),
     ],
@@ -33,6 +40,7 @@ class RecipeBrowserApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(hiveInitProvider);
     final router = ref.watch(_routerProvider);
     return MaterialApp.router(
       title: 'Recipe Browser',
