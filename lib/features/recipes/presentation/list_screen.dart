@@ -23,6 +23,7 @@ class _RecipeListScreenState extends ConsumerState<RecipeListScreen> {
   final _debouncer = Debouncer(milliseconds: 400);
   int _page = 1;
   static const _pageSize = 20;
+  bool _isPaginating = false;
 
   @override
   void dispose() {
@@ -136,14 +137,18 @@ class _RecipeListScreenState extends ConsumerState<RecipeListScreen> {
                   final m = isSearching ? 'No results. Try a different search.' : 'Pick a category or search to begin.';
                   return EmptyState(message: m);
                 }
-                final end = (_page * _pageSize).clamp(0, total);
+                final end = (_page * _pageSize).clamp(0, total).toInt();
                 final pageItems = list.take(end).toList();
                 return NotificationListener<ScrollNotification>(
                   onNotification: (sn) {
-                    if (sn.metrics.pixels >= sn.metrics.maxScrollExtent - 200) {
-                      if (end < total) {
-                        setState(() => _page += 1);
-                      }
+                    // Trigger when near the bottom and only once per frame
+                    final canLoadMore = end < total;
+                    if (!_isPaginating && canLoadMore && sn.metrics.extentAfter < 300) {
+                      _isPaginating = true;
+                      setState(() => _page += 1);
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        _isPaginating = false;
+                      });
                     }
                     return false;
                   },
