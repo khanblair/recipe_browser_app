@@ -2,7 +2,9 @@
 
 A polished Flutter app that browses recipes from TheMealDB. Includes search, category filters (with an “All” mixed feed), detailed views, favorites with local persistence, and dark mode.
 
-This app is built to meet Kolaborate’s take‑home assignment criteria: code quality and organization, functionality, UI/UX, error handling, and documentation clarity.
+I have built this app is built to meet Kolaborate’s take‑home assignment criteria: code quality and organization, functionality, UI/UX, error handling, and documentation clarity.
+
+Planning phase is shown in the CHANGELOG.md file
 
 ## Demo (screenshots)
 
@@ -192,7 +194,9 @@ CI: If the repository includes a GitHub Actions workflow (e.g., `.github/workflo
 - Android: `android:label` set; Internet permission enabled
 - iOS: `CFBundleDisplayName/CFBundleName` set; ATS allows necessary network traffic
 
-## Time Log (total 4h)
+## Time Log (total estimated time 4hrs)
+
+- This app was built in two phases, first phase from 6:00pm to 8:00pm and the second phase from 8:00am to 9:00am
 
 - Planning & setup: 25 min
 	- Interpreted assignment requirements and defined success criteria
@@ -231,7 +235,11 @@ CI: If the repository includes a GitHub Actions workflow (e.g., `.github/workflo
 	- Wrote complete README (setup, run, architecture, API, troubleshooting)
 	- Authored CHANGELOG with development plan and time tracking
 
-Total: 4 hours
+- Polishing and Final Touches
+    - Adding screenshots
+    - Fixing infinitie scrolling
+
+Total: 4hrs hours
 
 
 
