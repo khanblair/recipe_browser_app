@@ -50,7 +50,7 @@ class RecipeDetailScreen extends ConsumerWidget {
                           ),
                         )
                       : Container(
-                          color: Theme.of(context).colorScheme.surfaceVariant,
+                          color: Theme.of(context).colorScheme.surfaceContainerHighest,
                           child: const Icon(Icons.restaurant_menu, size: 64),
                         ),
                 ),

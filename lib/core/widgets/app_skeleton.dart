@@ -13,7 +13,7 @@ class AppSkeleton extends StatelessWidget {
       height: height,
       width: width,
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.6),
+        color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.6),
         borderRadius: BorderRadius.circular(radius),
       ),
     );

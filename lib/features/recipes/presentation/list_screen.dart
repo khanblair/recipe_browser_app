@@ -227,14 +227,14 @@ class _RecipeTile extends ConsumerWidget {
                     height: 72,
                     child: thumb == null
                         ? Container(
-                            color: Theme.of(context).colorScheme.surfaceVariant,
+                            color: Theme.of(context).colorScheme.surfaceContainerHighest,
                             child: const Icon(Icons.restaurant_menu, size: 32),
                           )
                         : CachedNetworkImage(
                             imageUrl: thumb!,
                             fit: BoxFit.cover,
                             placeholder: (_, __) => Container(
-                              color: Theme.of(context).colorScheme.surfaceVariant,
+                              color: Theme.of(context).colorScheme.surfaceContainerHighest,
                             ),
                           ),
                   ),

@@ -14,7 +14,7 @@ abstract class MealDetail with _$MealDetail {
     String? strMealThumb,
     String? strYoutube,
     // Keep raw map for ingredient parsing outside model
-    @JsonKey(ignore: true) Map<String, dynamic>? raw,
+    @JsonKey(includeFromJson: false, includeToJson: false) Map<String, dynamic>? raw,
   }) = _MealDetail;
 
   factory MealDetail.fromJson(Map<String, dynamic> json) => _$MealDetailFromJson(json);
